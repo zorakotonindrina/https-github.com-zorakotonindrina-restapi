@@ -2,38 +2,91 @@ package mg.votretp.restapi.model;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
 
 @Entity
-@Table(name="users")
+@Table(name = "users")
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "iduser")
+    private Long idUser;
 
-    private String email;
-    private String password;
+    @Column(name = "date_creation")
+    private LocalDateTime dateCreation;
+
+    @Column(name = "nom")
+    private String nom;
+
+    @Column(name = "prenom")
+    private String prenom;
+
+    @Column(name = "numero", unique = true, nullable = false, length = 14)
+    private String numero;
+
+    @Column(name = "mdp", nullable = false)
+    private String mdp;
+
     @ManyToOne
-    @JoinColumn(name = "role_id")
+    @JoinColumn(name = "id_role")
     private Role role;
 
-    private String fullName;
+    @PrePersist
+    public void prePersist() {
+        this.dateCreation = LocalDateTime.now();
+    }
 
     public User() {
     }
 
-    public Long getId() { return id; }
+    public Long getIdUser() {
+        return idUser;
+    }
 
-    public String getEmail() { return email; }
+    public void setIdUser(Long idUser) {
+        this.idUser = idUser;
+    }
 
-    public String getPassword() { return password; }
+    public LocalDateTime getDateCreation() {
+        return dateCreation;
+    }
 
-    public void setId(Long id) { this.id = id; }
+    public void setDateCreation(LocalDateTime dateCreation) {
+        this.dateCreation = dateCreation;
+    }
 
-    public void setEmail(String email) { this.email = email; }
+    public String getNom() {
+        return nom;
+    }
 
-    public void setPassword(String password) { this.password = password; }
+    public void setNom(String nom) {
+        this.nom = nom;
+    }
 
+    public String getPrenom() {
+        return prenom;
+    }
+
+    public void setPrenom(String prenom) {
+        this.prenom = prenom;
+    }
+
+    public String getNumero() {
+        return numero;
+    }
+
+    public void setNumero(String numero) {
+        this.numero = numero;
+    }
+
+    public String getMdp() {
+        return mdp;
+    }
+
+    public void setMdp(String mdp) {
+        this.mdp = mdp;
+    }
 
     public Role getRole() {
         return role;
@@ -41,13 +94,5 @@ public class User {
 
     public void setRole(Role role) {
         this.role = role;
-    }
-
-    public String getFullName() {
-        return fullName;
-    }
-
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
     }
 }

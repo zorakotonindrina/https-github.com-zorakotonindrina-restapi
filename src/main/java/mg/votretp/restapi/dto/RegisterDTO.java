@@ -1,37 +1,46 @@
 package mg.votretp.restapi.dto;
 
-
 public class RegisterDTO {
 
-    private String fullName;
-    private String email;
+    private String nom;
+    private String prenom;
+    private String numero;
     private String password;
     private String roleName;
 
     public RegisterDTO() {
     }
 
-    public RegisterDTO(String fullName, String email, String password, String roleName) {
-        this.fullName = fullName;
-        this.email = email;
+    public RegisterDTO(String nom, String prenom, String numero, String password, String roleName) {
+        this.nom = nom;
+        this.prenom = prenom;
+        this.numero = numero;
         this.password = password;
         this.roleName = roleName;
     }
 
-    public String getFullName() {
-        return fullName;
+    public String getNom() {
+        return nom;
     }
 
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
+    public void setNom(String nom) {
+        this.nom = nom;
     }
 
-    public String getEmail() {
-        return email;
+    public String getPrenom() {
+        return prenom;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setPrenom(String prenom) {
+        this.prenom = prenom;
+    }
+
+    public String getNumero() {
+        return numero;
+    }
+
+    public void setNumero(String numero) {
+        this.numero = numero;
     }
 
     public String getPassword() {

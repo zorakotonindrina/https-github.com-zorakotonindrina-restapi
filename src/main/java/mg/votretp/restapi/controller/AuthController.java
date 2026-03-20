@@ -17,7 +17,7 @@ public class AuthController {
 
     @PostMapping("/login")
     public AuthResponseDTO login(@RequestBody LoginDTO dto) {
-        return authService.login(dto.getEmail(), dto.getPassword());
+        return authService.login(dto.getNumero(), dto.getPassword());
     }
 
     @PostMapping("/register")

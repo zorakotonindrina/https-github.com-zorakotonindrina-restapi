@@ -26,21 +26,21 @@ public class AuthService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public AuthResponseDTO login(String email, String password) {
-        User user = repo.findByEmail(email)
+    public AuthResponseDTO login(String numero, String password) {
+        User user = repo.findByNumero(numero)
                 .orElseThrow(() -> new RuntimeException("Utilisateur introuvable"));
 
-        if (!passwordEncoder.matches(password, user.getPassword())) {
+        if (!passwordEncoder.matches(password, user.getMdp())) {
             throw new RuntimeException("Mot de passe incorrect");
         }
 
         String accessToken = jwtService.generateAccessToken(
-                user.getEmail(),
+                user.getNumero(),
                 user.getRole().getName()
         );
 
         String refreshToken = jwtService.generateRefreshToken(
-                user.getEmail(),
+                user.getNumero(),
                 user.getRole().getName()
         );
 
@@ -48,17 +48,18 @@ public class AuthService {
     }
 
     public String register(RegisterDTO dto) {
-        if (repo.existsByEmail(dto.getEmail())) {
-            throw new RuntimeException("Cet email existe déjà");
+        if (repo.existsByNumero(dto.getNumero())) {
+            throw new RuntimeException("Ce numéro existe déjà");
         }
 
         Role role = roleRepository.findByName(dto.getRoleName().toUpperCase())
                 .orElseThrow(() -> new RuntimeException("Rôle introuvable"));
 
         User user = new User();
-        user.setFullName(dto.getFullName());
-        user.setEmail(dto.getEmail());
-        user.setPassword(passwordEncoder.encode(dto.getPassword()));
+        user.setNom(dto.getNom());
+        user.setPrenom(dto.getPrenom());
+        user.setNumero(dto.getNumero());
+        user.setMdp(passwordEncoder.encode(dto.getPassword()));
         user.setRole(role);
 
         repo.save(user);
@@ -77,21 +78,23 @@ public class AuthService {
             throw new RuntimeException("Refresh token invalide");
         }
 
-        String email = jwtService.extractEmail(refreshToken);
+        String numero = jwtService.extractEmail(refreshToken);
 
-        User user = repo.findByEmail(email)
+        User user = repo.findByNumero(numero)
                 .orElseThrow(() -> new RuntimeException("Utilisateur introuvable"));
 
         String newAccessToken = jwtService.generateAccessToken(
-                user.getEmail(),
+                user.getNumero(),
                 user.getRole().getName()
         );
 
         String newRefreshToken = jwtService.generateRefreshToken(
-                user.getEmail(),
+                user.getNumero(),
                 user.getRole().getName()
         );
 
         return new AuthResponseDTO(newAccessToken, newRefreshToken, "Token rafraîchi avec succès");
     }
+
+
 }
