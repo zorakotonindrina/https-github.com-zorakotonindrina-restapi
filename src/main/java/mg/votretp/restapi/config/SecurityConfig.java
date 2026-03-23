@@ -28,6 +28,7 @@ public class SecurityConfig {
                         .requestMatchers("/h2-console/**").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .requestMatchers("/favicon.ico", "/error").permitAll()
+                        .requestMatchers("/api/panier/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .headers(headers -> headers

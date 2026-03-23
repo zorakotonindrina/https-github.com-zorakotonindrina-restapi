@@ -93,7 +93,7 @@ public class DataInitializer {
             Plat pizzaRoyale = platRepository.findByNom("Pizza Royale").orElseGet(() -> {
                 Plat p = new Plat();
                 p.setNom("Pizza Royale");
-                p.setImage("pizza_royale.jpg");
+                p.setImage("b08c8689-2103-4f37-897d-64160220dacd.jpg");
                 p.setDetail("Pizza avec jambon et fromage");
                 p.setDispo(true);
                 p.setCategory(pizza);
