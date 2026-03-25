@@ -32,7 +32,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String path = request.getServletPath();
         System.out.println("JWT FILTER EXECUTED : " + path);
 
-        if (path.startsWith("/api/auth/") || path.startsWith("/h2-console") || path.equals("/favicon.ico") || path.equals("/error")) {
+        if (path.startsWith("/api/auth/") ||path.startsWith("/api/panier/client") || path.startsWith("/h2-console") || path.equals("/favicon.ico") || path.equals("/error")) {
             filterChain.doFilter(request, response);
             return;
         }

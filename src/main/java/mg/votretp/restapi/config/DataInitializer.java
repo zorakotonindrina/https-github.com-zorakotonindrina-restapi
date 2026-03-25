@@ -19,6 +19,7 @@ public class DataInitializer {
                                CategoryRepository categoryRepository,
                                PlatRepository platRepository,
                                PrixPlatRepository prixPlatRepository,
+                               ModePaiementRepository modePaiementRepository,
                                PasswordEncoder passwordEncoder) {
         return args -> {
 
@@ -64,6 +65,24 @@ public class DataInitializer {
                 r.setNom("Mon Restaurant");
                 r.setLogo("logo.png");
                 return restaurantRepository.save(r);
+            });
+
+            ModePaiement cash = modePaiementRepository.findByNom("CASH").orElseGet(() -> {
+                ModePaiement m = new ModePaiement();
+                m.setNom("CASH");
+                return modePaiementRepository.save(m);
+            });
+
+            ModePaiement mvola = modePaiementRepository.findByNom("MVOLA").orElseGet(() -> {
+                ModePaiement m = new ModePaiement();
+                m.setNom("MVOLA");
+                return modePaiementRepository.save(m);
+            });
+
+            ModePaiement orangeMoney = modePaiementRepository.findByNom("ORANGE_MONEY").orElseGet(() -> {
+                ModePaiement m = new ModePaiement();
+                m.setNom("ORANGE_MONEY");
+                return modePaiementRepository.save(m);
             });
 
             // =========================
