@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import mg.votretp.restapi.dto.TopPlatDTO;
 import mg.votretp.restapi.dto.TotalParModePaiementDTO;
 import mg.votretp.restapi.service.StatistiqueService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -29,6 +30,7 @@ public class StatistiqueController {
     }
 
     @Operation(summary = "Afficher le total des commandes par mode de paiement")
+    @PreAuthorize("hasAnyRole('ADMIN','RESTAURANT_OWNER')")
     @GetMapping("/total-par-mode-paiement")
     public List<TotalParModePaiementDTO> getTotalParModePaiement() {
         return statistiqueService.getTotalParModePaiement();
