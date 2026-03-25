@@ -206,7 +206,7 @@ public class PanierService {
         ModePaiement modePaiement = modePaiementRepository.findById(dto.getIdModePaiement())
                 .orElseThrow(() -> new RuntimeException("Mode de paiement introuvable"));
 
-        int numeroCommande = java.util.concurrent.ThreadLocalRandom.current().nextInt(10000, 99999);
+        int numeroCommande = genererNumeroCommandeDuJour();
         String code = String.valueOf(java.util.concurrent.ThreadLocalRandom.current().nextInt(100000, 999999));
 
         panier.setNumCommande(numeroCommande);
@@ -360,5 +360,15 @@ public class PanierService {
                 confirmePar,
                 "Commande confirmée par le restaurant"
         );
+    }
+
+    private Integer genererNumeroCommandeDuJour() {
+        java.time.LocalDate today = java.time.LocalDate.now();
+        java.time.LocalDateTime debutJour = today.atStartOfDay();
+        java.time.LocalDateTime finJour = today.plusDays(1).atStartOfDay();
+
+        Integer maxNum = commandeRepository.findMaxNumCommandeByDay(debutJour, finJour);
+
+        return maxNum + 1;
     }
 }
