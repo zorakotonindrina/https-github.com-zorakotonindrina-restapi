@@ -4,15 +4,15 @@ public class AuthResponseDTO {
 
     private String accessToken;
     private String refreshToken;
-    private String message;
+    private UserLoginDTO user;
 
     public AuthResponseDTO() {
     }
 
-    public AuthResponseDTO(String accessToken, String refreshToken, String message) {
+    public AuthResponseDTO(String accessToken, String refreshToken, UserLoginDTO user) {
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
-        this.message = message;
+        this.user = user;
     }
 
     public String getAccessToken() {
@@ -31,11 +31,11 @@ public class AuthResponseDTO {
         this.refreshToken = refreshToken;
     }
 
-    public String getMessage() {
-        return message;
+    public UserLoginDTO getUser() {
+        return user;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setUser(UserLoginDTO user) {
+        this.user = user;
     }
 }

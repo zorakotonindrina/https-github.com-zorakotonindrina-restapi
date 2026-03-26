@@ -85,6 +85,11 @@ public class PanierController {
         return response;
     }
 
+    @PostMapping("/client/renvoyer-code")
+    public RenvoyerCodeResponseDTO renvoyerCode(@RequestBody RenvoyerCodeDTO dto) {
+        return panierService.renvoyerCode(dto);
+    }
+
     @Operation(summary = "Soumettre la reference de paiement")
     @PostMapping("/client/soumettre-paiement")
     public RecuResponseDTO soumettrePaiement(@RequestBody SoumettrePaiementDTO dto) {
@@ -115,5 +120,15 @@ public class PanierController {
                 .getTotalParModePaiement()).withRel("stats-mode-paiement"));
 
         return response;
+    }
+
+    @PostMapping("/annuler")
+    public AnnulerCommandeResponseDTO annulerCommande(@RequestBody AnnulerCommandeDTO dto) {
+        return panierService.annulerCommande(dto);
+    }
+
+    @GetMapping("/detail/{numCommande}")
+    public CommandeClientDetailDTO getDetailCommande(@PathVariable Integer numCommande) {
+        return panierService.getDetailCommande(numCommande);
     }
 }

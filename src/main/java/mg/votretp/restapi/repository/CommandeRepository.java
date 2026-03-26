@@ -27,5 +27,9 @@ public interface CommandeRepository extends JpaRepository<Commande, Long> {
 
     List<Commande> findByStatusOrderByDateCommandeAsc(String status);
 
+    boolean existsByEmailClientAndStatusIn(String emailClient, java.util.List<String> statuses);
+
+    java.util.Optional<Commande> findByNumCommande(Integer numCommande);
+
 
 }

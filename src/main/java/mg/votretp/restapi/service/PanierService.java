@@ -70,8 +70,21 @@ public class PanierService {
             throw new RuntimeException("La commande doit contenir au moins un plat");
         }
 
+
         ModePaiement modePaiement = modePaiementRepository.findById(dto.getIdModePaiement())
                 .orElseThrow(() -> new RuntimeException("Mode de paiement introuvable"));
+
+        boolean commandeBloquanteExiste = commandeRepository.existsByEmailClientAndStatusIn(
+                dto.getEmailClient(),
+                java.util.List.of(
+                        "EN_VALIDATION_EMAIL",
+                        "EN_ATTENTE"
+                )
+        );
+
+        if (commandeBloquanteExiste) {
+            throw new RuntimeException("Vous avez déjà une commande en cours de validation");
+        }
 
         Integer numeroCommande = genererNumeroCommandeDuJour();
         String code = String.valueOf(ThreadLocalRandom.current().nextInt(100000, 999999));
@@ -208,7 +221,7 @@ public class PanierService {
         MailValidationCommande validation = new MailValidationCommande();
         validation.setEmailClient(dto.getEmailClient());
         validation.setCode(code);
-        validation.setExpireAt(java.time.LocalDateTime.now().plusMinutes(10));
+        validation.setExpireAt(java.time.LocalDateTime.now().plusMinutes(15));
         validation.setCommande(panier);
 
         mailValidationCommandeRepository.save(validation);
@@ -352,14 +365,122 @@ public class PanierService {
                 "Commande confirmée par le restaurant"
         );
     }
-
     private Integer genererNumeroCommandeDuJour() {
         java.time.LocalDate today = java.time.LocalDate.now();
         java.time.LocalDateTime debutJour = today.atStartOfDay();
         java.time.LocalDateTime finJour = today.plusDays(1).atStartOfDay();
 
         Integer maxNum = commandeRepository.findMaxNumCommandeByDay(debutJour, finJour);
+        int numeroJour = (maxNum == null) ? 1 : maxNum + 1;
 
-        return maxNum + 1;
+        String datePart = today.format(java.time.format.DateTimeFormatter.ofPattern("ddMMyy"));
+        String numeroCommande = datePart + String.format("%03d", numeroJour);
+
+        return Integer.parseInt(numeroCommande);
+    }
+
+    public RenvoyerCodeResponseDTO renvoyerCode(RenvoyerCodeDTO dto) {
+        if (dto.getIdCommande() == null) {
+            throw new RuntimeException("Id commande obligatoire");
+        }
+
+        Commande commande = commandeRepository.findById(dto.getIdCommande())
+                .orElseThrow(() -> new RuntimeException("Commande introuvable"));
+
+        if (!"EN_VALIDATION_EMAIL".equals(commande.getStatus())) {
+            throw new RuntimeException("Cette commande n'est pas en attente de validation email");
+        }
+
+        MailValidationCommande validation = mailValidationCommandeRepository
+                .findTopByCommande_IdCommandeOrderByDateCreationDesc(dto.getIdCommande())
+                .orElseThrow(() -> new RuntimeException("Validation mail introuvable"));
+
+        String nouveauCode = String.valueOf(java.util.concurrent.ThreadLocalRandom.current().nextInt(100000, 999999));
+
+        validation.setCode(nouveauCode);
+        validation.setExpireAt(java.time.LocalDateTime.now().plusMinutes(15));
+
+        mailValidationCommandeRepository.save(validation);
+
+        return new RenvoyerCodeResponseDTO(
+                commande.getIdCommande(),
+                "Nouveau code généré avec succès",
+                nouveauCode
+        );
+    }
+
+    public AnnulerCommandeResponseDTO annulerCommande(AnnulerCommandeDTO dto) {
+        if (dto.getIdCommande() == null) {
+            throw new RuntimeException("Id commande obligatoire");
+        }
+
+        Commande commande = commandeRepository.findById(dto.getIdCommande())
+                .orElseThrow(() -> new RuntimeException("Commande introuvable"));
+
+        if (!java.util.List.of("EN_VALIDATION_EMAIL", "EN_ATTENTE").contains(commande.getStatus())) {
+            throw new RuntimeException("Cette commande ne peut plus être annulée");
+        }
+
+        commande.setStatus("ANNULEE");
+        commandeRepository.save(commande);
+
+        return new AnnulerCommandeResponseDTO(
+                commande.getIdCommande(),
+                commande.getStatus(),
+                "Commande annulée avec succès"
+        );
+    }
+
+    public CommandeClientDetailDTO getDetailCommande(Integer numCommande) {
+
+        if (numCommande == null) {
+            throw new RuntimeException("Numéro de commande obligatoire");
+        }
+
+        Commande commande = commandeRepository.findByNumCommande(numCommande)
+                .orElseThrow(() -> new RuntimeException("Commande introuvable"));
+
+        java.util.List<ListeCommande> lignes = listeCommandeRepository
+                .findByCommande_IdCommande(commande.getIdCommande());
+
+        java.util.List<CommandeClientLigneDTO> lignesDTO = lignes.stream().map(ligne -> {
+
+            java.util.Optional<PrixPlat> dernierPrix = prixPlatRepository
+                    .findTopByPlat_IdPlatOrderByDatePrixDesc(ligne.getPlat().getIdPlat());
+
+            double prix = dernierPrix
+                    .map(p -> p.getPrix().doubleValue())
+                    .orElse(0.0);
+
+            return new CommandeClientLigneDTO(
+                    ligne.getPlat().getNom(),
+                    ligne.getQuantite(),
+                    prix
+            );
+
+        }).toList();
+
+        java.util.Optional<Recu> recu = recuRepository
+                .findByCommande_IdCommande(commande.getIdCommande());
+
+        String refPaiement = recu
+                .map(r -> r.getRefPayament())
+                .orElse(null);
+
+        double total = lignesDTO.stream()
+                .mapToDouble(l -> l.getQuantite() * l.getPrixUnitaire())
+                .sum();
+
+        return new CommandeClientDetailDTO(
+                commande.getNumCommande(),
+                commande.getStatus(),
+                commande.getEmailClient(),
+                commande.getNumClient(),
+                commande.getDateCommande(),
+                commande.getModePaiement().getNom(),
+                refPaiement,
+                total,
+                lignesDTO
+        );
     }
 }

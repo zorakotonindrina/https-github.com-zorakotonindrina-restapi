@@ -3,6 +3,7 @@ package mg.votretp.restapi.service;
 import mg.votretp.restapi.dto.AuthResponseDTO;
 import mg.votretp.restapi.dto.RefreshTokenRequestDTO;
 import mg.votretp.restapi.dto.RegisterDTO;
+import mg.votretp.restapi.dto.UserLoginDTO;
 import mg.votretp.restapi.model.Role;
 import mg.votretp.restapi.model.User;
 import mg.votretp.restapi.repository.RoleRepository;
@@ -44,7 +45,18 @@ public class AuthService {
                 user.getRole().getName()
         );
 
-        return new AuthResponseDTO(accessToken, refreshToken, "Connexion réussie");
+        UserLoginDTO userDto = new UserLoginDTO(
+                user.getIdUser(),
+                user.getNom(),
+                user.getPrenom(),
+                user.getRole().getName()
+        );
+
+        return new AuthResponseDTO(
+                accessToken,
+                refreshToken,
+                userDto
+        );
     }
 
     public String register(RegisterDTO dto) {
@@ -93,7 +105,18 @@ public class AuthService {
                 user.getRole().getName()
         );
 
-        return new AuthResponseDTO(newAccessToken, newRefreshToken, "Token rafraîchi avec succès");
+        UserLoginDTO userDto = new UserLoginDTO(
+                user.getIdUser(),
+                user.getNom(),
+                user.getPrenom(),
+                user.getRole().getName()
+        );
+
+        return new AuthResponseDTO(
+                newAccessToken,
+                newRefreshToken,
+                userDto
+        );
     }
 
 
