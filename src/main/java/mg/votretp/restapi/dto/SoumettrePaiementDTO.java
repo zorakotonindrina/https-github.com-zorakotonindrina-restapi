@@ -1,20 +1,19 @@
 package mg.votretp.restapi.dto;
 
-
 public class SoumettrePaiementDTO {
 
-    private String emailClient;
+    private Long idCommande;
     private String refPaiement;
 
     public SoumettrePaiementDTO() {
     }
 
-    public String getEmailClient() {
-        return emailClient;
+    public Long getIdCommande() {
+        return idCommande;
     }
 
-    public void setEmailClient(String emailClient) {
-        this.emailClient = emailClient;
+    public void setIdCommande(Long idCommande) {
+        this.idCommande = idCommande;
     }
 
     public String getRefPaiement() {

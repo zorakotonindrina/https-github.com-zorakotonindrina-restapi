@@ -11,4 +11,6 @@ public interface MailValidationCommandeRepository extends JpaRepository<MailVali
     Optional<MailValidationCommande> findTopByEmailClientAndCodeOrderByDateCreationDesc(String emailClient, String code);
 
     Optional<MailValidationCommande> findTopByCommande_IdCommandeOrderByDateCreationDesc(Long idCommande);
+
+    Optional<MailValidationCommande> findTopByCommande_IdCommandeAndCodeOrderByDateCreationDesc(Long idCommande, String code);
 }

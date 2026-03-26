@@ -26,4 +26,6 @@ public interface CommandeRepository extends JpaRepository<Commande, Long> {
     long countByStatusAndDateCommandeBetween(String status, java.time.LocalDateTime debut, java.time.LocalDateTime fin);
 
     List<Commande> findByStatusOrderByDateCommandeAsc(String status);
+
+
 }

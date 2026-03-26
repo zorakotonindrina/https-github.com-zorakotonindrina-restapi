@@ -227,23 +227,21 @@ public class PanierService {
 
 
     public ValidationMailResponseDTO confirmerEmail(ConfirmerEmailDTO dto) {
-        if (dto.getEmailClient() == null || dto.getEmailClient().isBlank()) {
-            throw new RuntimeException("Email client obligatoire");
-        }
-
+        
         if (dto.getCode() == null || dto.getCode().isBlank()) {
             throw new RuntimeException("Code obligatoire");
         }
 
         MailValidationCommande validation = mailValidationCommandeRepository
-                .findTopByEmailClientAndCodeOrderByDateCreationDesc(dto.getEmailClient(), dto.getCode())
+                .findTopByCommande_IdCommandeAndCodeOrderByDateCreationDesc(dto.getIdCommande(), dto.getCode())
                 .orElseThrow(() -> new RuntimeException("Code invalide"));
+
+        Commande commande = validation.getCommande();
 
         if (validation.getExpireAt() != null && validation.getExpireAt().isBefore(LocalDateTime.now())) {
             throw new RuntimeException("Code expiré");
         }
 
-        Commande commande = validation.getCommande();
         commande.setStatus("EN_ATTENTE");
         commandeRepository.save(commande);
 
@@ -256,16 +254,17 @@ public class PanierService {
     }
 
     public RecuResponseDTO soumettrePaiement(SoumettrePaiementDTO dto) {
-        if (dto.getEmailClient() == null || dto.getEmailClient().isBlank()) {
-            throw new RuntimeException("Email client obligatoire");
-        }
 
         if (dto.getRefPaiement() == null || dto.getRefPaiement().isBlank()) {
             throw new RuntimeException("Référence de paiement obligatoire");
         }
 
-        Commande commande = commandeRepository.findByEmailClientAndStatus(dto.getEmailClient(), "EN_ATTENTE")
-                .orElseThrow(() -> new RuntimeException("Commande en attente introuvable"));
+        Commande commande = commandeRepository.findById(dto.getIdCommande())
+                .orElseThrow(() -> new RuntimeException("Commande introuvable"));
+
+        if (!"EN_ATTENTE".equals(commande.getStatus())) {
+            throw new RuntimeException("Cette commande n'est pas en attente de paiement");
+        }
 
         if (recuRepository.findByCommande_IdCommande(commande.getIdCommande()).isPresent()) {
             throw new RuntimeException("Un reçu existe déjà pour cette commande");
@@ -309,7 +308,7 @@ public class PanierService {
 
 
 
-    
+
     public CommandeConfirmeeResponseDTO validerRestaurant(ValiderRestaurantDTO dto, String numeroUtilisateur) {
         if (dto.getIdCommande() == null) {
             throw new RuntimeException("Id commande obligatoire");
