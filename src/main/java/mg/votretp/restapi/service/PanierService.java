@@ -227,7 +227,7 @@ public class PanierService {
 
 
     public ValidationMailResponseDTO confirmerEmail(ConfirmerEmailDTO dto) {
-        
+
         if (dto.getCode() == null || dto.getCode().isBlank()) {
             throw new RuntimeException("Code obligatoire");
         }

@@ -81,8 +81,6 @@ public class PanierController {
         response.add(linkTo(methodOn(PanierController.class)
                 .soumettrePaiement(null)).withRel("soumettre-paiement"));
 
-        response.add(linkTo(methodOn(PanierController.class)
-                .afficherPanier(dto.getEmailClient())).withRel("voir-panier"));
 
         return response;
     }
@@ -95,11 +93,6 @@ public class PanierController {
         response.add(linkTo(methodOn(PanierController.class)
                 .soumettrePaiement(dto)).withSelfRel());
 
-        response.add(linkTo(methodOn(PanierController.class)
-                .afficherPanier(dto.getEmailClient())).withRel("voir-panier"));
-
-        response.add(linkTo(methodOn(PanierController.class)
-                .validerRestaurant(null, null)).withRel("validation-restaurant"));
 
         return response;
     }
