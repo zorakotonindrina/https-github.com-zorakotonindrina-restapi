@@ -308,6 +308,8 @@ public class PanierService {
     }
 
 
+
+    
     public CommandeConfirmeeResponseDTO validerRestaurant(ValiderRestaurantDTO dto, String numeroUtilisateur) {
         if (dto.getIdCommande() == null) {
             throw new RuntimeException("Id commande obligatoire");
