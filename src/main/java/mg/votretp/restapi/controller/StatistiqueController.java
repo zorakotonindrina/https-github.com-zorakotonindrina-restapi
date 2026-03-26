@@ -2,8 +2,10 @@ package mg.votretp.restapi.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import mg.votretp.restapi.dto.CommandeAdminDTO;
 import mg.votretp.restapi.dto.TopPlatDTO;
 import mg.votretp.restapi.dto.TotalParModePaiementDTO;
+import mg.votretp.restapi.service.AdminCommandeService;
 import mg.votretp.restapi.service.StatistiqueService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,8 +21,17 @@ public class StatistiqueController {
 
     private final StatistiqueService statistiqueService;
 
-    public StatistiqueController(StatistiqueService statistiqueService) {
+    private final AdminCommandeService adminCommandeService;
+
+
+    public StatistiqueController(StatistiqueService statistiqueService, AdminCommandeService adminCommandeService) {
         this.statistiqueService = statistiqueService;
+        this.adminCommandeService = adminCommandeService;
+    }
+
+    @GetMapping("/a-valider")
+    public List<CommandeAdminDTO> getCommandesAValider() {
+        return adminCommandeService.getCommandesAValider();
     }
 
     @Operation(summary = "Afficher les plats les plus commandés")

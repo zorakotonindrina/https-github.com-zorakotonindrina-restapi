@@ -44,6 +44,12 @@ public class DataInitializer {
                 return roleRepository.save(role);
             });
 
+            Role cuisinierRole = roleRepository.findByName("CUISINIER").orElseGet(() -> {
+                Role role = new Role();
+                role.setName("CUISINIER");
+                return roleRepository.save(role);
+            });
+
             // =========================
             // ADMIN USER
             // =========================
@@ -54,6 +60,16 @@ public class DataInitializer {
                 user.setNumero("0320000000");
                 user.setMdp(passwordEncoder.encode("123456"));
                 user.setRole(adminRole);
+                return userRepository.save(user);
+            });
+
+            userRepository.findByNumero("0330000000").orElseGet(() -> {
+                User user = new User();
+                user.setNom("Chef");
+                user.setPrenom("Cuisine");
+                user.setNumero("0330000000");
+                user.setMdp(passwordEncoder.encode("123456"));
+                user.setRole(cuisinierRole);
                 return userRepository.save(user);
             });
 

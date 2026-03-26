@@ -1,20 +1,11 @@
 package mg.votretp.restapi.dto;
 
-public class UpdateCartQuantityDTO {
+public class CommandeItemDTO {
 
-    private String emailClient;
     private Long idPlat;
     private Integer quantite;
 
-    public UpdateCartQuantityDTO() {
-    }
-
-    public String getEmailClient() {
-        return emailClient;
-    }
-
-    public void setEmailClient(String emailClient) {
-        this.emailClient = emailClient;
+    public CommandeItemDTO() {
     }
 
     public Long getIdPlat() {

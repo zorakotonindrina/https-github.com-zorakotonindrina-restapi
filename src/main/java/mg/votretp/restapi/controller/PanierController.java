@@ -19,25 +19,30 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @Tag(name = "Panier & Commande", description = "Gestion du panier, validation, paiement et confirmation")
 public class PanierController {
 
+
     private final PanierService panierService;
 
     public PanierController(PanierService panierService) {
         this.panierService = panierService;
     }
 
-    @Operation(summary = "AJouter un plat au panier")
-    @PostMapping("/client/ajouter")
-    public Map<String, String> ajouterAuPanier(@RequestBody AddToCartDTO dto) {
-        String message = panierService.ajouterAuPanier(dto);
-        return Map.of("message", message);
+    @Operation(summary = "Passer Commande")
+    @PostMapping("/client/commander")
+    public PasserCommandeResponseDTO passerCommande(@RequestBody PasserCommandeDTO dto) {
+        PasserCommandeResponseDTO response = panierService.passerCommande(dto);
+
+        response.add(linkTo(methodOn(PanierController.class)
+                .passerCommande(dto)).withSelfRel());
+
+        response.add(linkTo(methodOn(PanierController.class)
+                .confirmerEmail(null)).withRel("confirmer-email"));
+
+        response.add(linkTo(methodOn(PanierController.class)
+                .soumettrePaiement(null)).withRel("soumettre-paiement"));
+        return response;
     }
 
-    @Operation(summary = "Modifier quantiter d' un plat au panier")
-    @PutMapping("/client/modifier-quantite")
-    public Map<String, String> modifierQuantite(@RequestBody UpdateCartQuantityDTO dto) {
-        String message = panierService.modifierQuantite(dto);
-        return Map.of("message", message);
-    }
+
 
     @Operation(summary = "Afficher le panier courant")
     @GetMapping("/client")
@@ -45,12 +50,6 @@ public class PanierController {
         return panierService.afficherPanier(emailClient);
     }
 
-    @Operation(summary = "Suuprimer un plat du panier")
-    @DeleteMapping("/client/supprimer")
-    public Map<String, String> supprimerDuPanier(@RequestBody RemoveFromCartDTO dto) {
-        String message = panierService.supprimerDuPanier(dto);
-        return Map.of("message", message);
-    }
     @Operation(summary = "Valider la commande et envouyer un code email")
     @PostMapping("/client/valider")
     public CommandeValideeResponseDTO validerCommande(@RequestBody ValiderCommandeDTO dto) {

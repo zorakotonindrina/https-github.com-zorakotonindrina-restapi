@@ -53,69 +53,80 @@ public class PanierService {
     }
 
 
-    public String ajouterAuPanier(AddToCartDTO dto) {
+    public PasserCommandeResponseDTO passerCommande(PasserCommandeDTO dto) {
         if (dto.getEmailClient() == null || dto.getEmailClient().isBlank()) {
             throw new RuntimeException("Email client obligatoire");
         }
 
-        if (dto.getQuantite() == null || dto.getQuantite() <= 0) {
-            throw new RuntimeException("La quantité doit être supérieure à 0");
+        if (dto.getNumClient() == null || dto.getNumClient().isBlank()) {
+            throw new RuntimeException("Numéro client obligatoire");
         }
 
-        Plat plat = platRepository.findById(dto.getIdPlat())
-                .orElseThrow(() -> new RuntimeException("Plat introuvable"));
-
-        if (Boolean.FALSE.equals(plat.getDispo())) {
-            throw new RuntimeException("Ce plat n'est pas disponible");
+        if (dto.getIdModePaiement() == null) {
+            throw new RuntimeException("Mode de paiement obligatoire");
         }
 
-        Commande panier = commandeRepository.findByEmailClientAndStatus(dto.getEmailClient(), "PANIER")
-                .orElseGet(() -> {
-                    Commande nouvelleCommande = new Commande();
-                    nouvelleCommande.setEmailClient(dto.getEmailClient());
-                    nouvelleCommande.setNumClient(dto.getNumClient());
-                    nouvelleCommande.setStatus("PANIER");
-                    return commandeRepository.save(nouvelleCommande);
-                });
+        if (dto.getItems() == null || dto.getItems().isEmpty()) {
+            throw new RuntimeException("La commande doit contenir au moins un plat");
+        }
 
-        ListeCommande ligne = listeCommandeRepository
-                .findByCommande_IdCommandeAndPlat_IdPlat(panier.getIdCommande(), plat.getIdPlat())
-                .orElse(null);
+        ModePaiement modePaiement = modePaiementRepository.findById(dto.getIdModePaiement())
+                .orElseThrow(() -> new RuntimeException("Mode de paiement introuvable"));
 
-        if (ligne != null) {
-            ligne.setQuantite(ligne.getQuantite() + dto.getQuantite());
+        Integer numeroCommande = genererNumeroCommandeDuJour();
+        String code = String.valueOf(ThreadLocalRandom.current().nextInt(100000, 999999));
+
+        Commande commande = new Commande();
+        commande.setEmailClient(dto.getEmailClient());
+        commande.setNumClient(dto.getNumClient());
+        commande.setNumCommande(numeroCommande);
+        commande.setModePaiement(modePaiement);
+        commande.setStatus("EN_VALIDATION_EMAIL");
+
+        commande = commandeRepository.save(commande);
+
+        for (CommandeItemDTO item : dto.getItems()) {
+            if (item.getIdPlat() == null) {
+                throw new RuntimeException("Chaque item doit contenir un idPlat");
+            }
+
+            if (item.getQuantite() == null || item.getQuantite() <= 0) {
+                throw new RuntimeException("Chaque quantité doit être supérieure à 0");
+            }
+
+            Plat plat = platRepository.findById(item.getIdPlat())
+                    .orElseThrow(() -> new RuntimeException("Plat introuvable : " + item.getIdPlat()));
+
+            if (Boolean.FALSE.equals(plat.getDispo())) {
+                throw new RuntimeException("Plat non disponible : " + plat.getNom());
+            }
+
+            ListeCommande ligne = new ListeCommande();
+            ligne.setCommande(commande);
+            ligne.setPlat(plat);
+            ligne.setQuantite(item.getQuantite());
+
             listeCommandeRepository.save(ligne);
-        } else {
-            ListeCommande nouvelleLigne = new ListeCommande();
-            nouvelleLigne.setCommande(panier);
-            nouvelleLigne.setPlat(plat);
-            nouvelleLigne.setQuantite(dto.getQuantite());
-            listeCommandeRepository.save(nouvelleLigne);
         }
 
-        return "Plat ajouté au panier avec succès";
-    }
+        MailValidationCommande validation = new MailValidationCommande();
+        validation.setEmailClient(dto.getEmailClient());
+        validation.setCode(code);
+        validation.setExpireAt(LocalDateTime.now().plusMinutes(10));
+        validation.setCommande(commande);
 
-    public String modifierQuantite(UpdateCartQuantityDTO dto) {
-        if (dto.getEmailClient() == null || dto.getEmailClient().isBlank()) {
-            throw new RuntimeException("Email client obligatoire");
-        }
+        mailValidationCommandeRepository.save(validation);
 
-        if (dto.getQuantite() == null || dto.getQuantite() <= 0) {
-            throw new RuntimeException("La quantité doit être supérieure à 0");
-        }
-
-        Commande panier = commandeRepository.findByEmailClientAndStatus(dto.getEmailClient(), "PANIER")
-                .orElseThrow(() -> new RuntimeException("Panier introuvable"));
-
-        ListeCommande ligne = listeCommandeRepository
-                .findByCommande_IdCommandeAndPlat_IdPlat(panier.getIdCommande(), dto.getIdPlat())
-                .orElseThrow(() -> new RuntimeException("Plat introuvable dans le panier"));
-
-        ligne.setQuantite(dto.getQuantite());
-        listeCommandeRepository.save(ligne);
-
-        return "Quantité modifiée avec succès";
+        return new PasserCommandeResponseDTO(
+                commande.getIdCommande(),
+                commande.getNumCommande(),
+                commande.getStatus(),
+                commande.getEmailClient(),
+                commande.getNumClient(),
+                commande.getModePaiement().getNom(),
+                "Commande créée avec succès",
+                code
+        );
     }
 
 
@@ -159,27 +170,6 @@ public class PanierService {
                 lignes,
                 totalGeneral
         );
-    }
-
-    public String supprimerDuPanier(RemoveFromCartDTO dto) {
-        if (dto.getEmailClient() == null || dto.getEmailClient().isBlank()) {
-            throw new RuntimeException("Email client obligatoire");
-        }
-
-        Commande panier = commandeRepository.findByEmailClientAndStatus(dto.getEmailClient(), "PANIER")
-                .orElseThrow(() -> new RuntimeException("Panier introuvable"));
-
-        ListeCommande ligne = listeCommandeRepository
-                .findByCommande_IdCommandeAndPlat_IdPlat(panier.getIdCommande(), dto.getIdPlat())
-                .orElseThrow(() -> new RuntimeException("Plat introuvable dans le panier"));
-
-        listeCommandeRepository.delete(ligne);
-
-        if (listeCommandeRepository.findByCommande_IdCommande(panier.getIdCommande()).isEmpty()) {
-            commandeRepository.delete(panier);
-        }
-
-        return "Plat supprimé du panier avec succès";
     }
 
 
