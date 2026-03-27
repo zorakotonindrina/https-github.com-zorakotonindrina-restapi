@@ -30,6 +30,7 @@ public class PanierService {
     private final CommandeConfirmerRepository commandeConfirmerRepository;
     private final UserRepository userRepository;
 
+    private final TableRestaurantRepository tableRestaurantRepository;
     public PanierService(CommandeRepository commandeRepository,
                          ListeCommandeRepository listeCommandeRepository,
                          PlatRepository platRepository,
@@ -39,7 +40,8 @@ public class PanierService {
                          MailService mailService,
                          RecuRepository recuRepository,
                          CommandeConfirmerRepository commandeConfirmerRepository,
-                         UserRepository userRepository) {
+                         UserRepository userRepository,
+                         TableRestaurantRepository tableRestaurantRepository) {
         this.commandeRepository = commandeRepository;
         this.listeCommandeRepository = listeCommandeRepository;
         this.platRepository = platRepository;
@@ -50,6 +52,7 @@ public class PanierService {
         this.recuRepository = recuRepository;
         this.commandeConfirmerRepository = commandeConfirmerRepository;
         this.userRepository = userRepository;
+        this.tableRestaurantRepository = tableRestaurantRepository;
     }
 
 
@@ -86,6 +89,10 @@ public class PanierService {
             throw new RuntimeException("Vous avez déjà une commande en cours de validation");
         }
 
+        TableRestaurant table = tableRestaurantRepository.findById(dto.getIdTable())
+                .orElseThrow(() -> new RuntimeException("Table introuvable"));
+
+
         Integer numeroCommande = genererNumeroCommandeDuJour();
         String code = String.valueOf(ThreadLocalRandom.current().nextInt(100000, 999999));
 
@@ -94,6 +101,7 @@ public class PanierService {
         commande.setNumClient(dto.getNumClient());
         commande.setNumCommande(numeroCommande);
         commande.setModePaiement(modePaiement);
+        commande.setTable(table);
         commande.setStatus("EN_VALIDATION_EMAIL");
 
         commande = commandeRepository.save(commande);
@@ -371,14 +379,30 @@ public class PanierService {
         java.time.LocalDateTime finJour = today.plusDays(1).atStartOfDay();
 
         Integer maxNum = commandeRepository.findMaxNumCommandeByDay(debutJour, finJour);
-        int numeroJour = (maxNum == null) ? 1 : maxNum + 1;
+
+        int numeroJour;
+
+        if (maxNum == null ) {
+            numeroJour = 1;
+        } else {
+            String maxNumStr = String.valueOf(maxNum);
+
+            if (maxNumStr.length() >= 9) {
+                String suffixe = maxNumStr.substring(maxNumStr.length() - 3);
+                numeroJour = Integer.parseInt(suffixe) + 1;
+            } else {
+                numeroJour = maxNum + 1;
+            }
+        }
+        if (numeroJour > 999) {
+            throw new RuntimeException("Nombre maximum de commandes du jour atteint");
+        }
 
         String datePart = today.format(java.time.format.DateTimeFormatter.ofPattern("ddMMyy"));
         String numeroCommande = datePart + String.format("%03d", numeroJour);
 
         return Integer.parseInt(numeroCommande);
     }
-
     public RenvoyerCodeResponseDTO renvoyerCode(RenvoyerCodeDTO dto) {
         if (dto.getIdCommande() == null) {
             throw new RuntimeException("Id commande obligatoire");

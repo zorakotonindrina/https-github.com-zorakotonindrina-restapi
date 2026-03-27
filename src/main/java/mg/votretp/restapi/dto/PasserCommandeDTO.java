@@ -7,6 +7,8 @@ public class PasserCommandeDTO {
     private String emailClient;
     private String numClient;
     private Long idModePaiement;
+    private Long idTable;
+
     private List<CommandeItemDTO> items;
 
     public PasserCommandeDTO() {
@@ -42,5 +44,13 @@ public class PasserCommandeDTO {
 
     public void setItems(List<CommandeItemDTO> items) {
         this.items = items;
+    }
+
+    public Long getIdTable() {
+        return idTable;
+    }
+
+    public void setIdTable(Long idTable) {
+        this.idTable = idTable;
     }
 }

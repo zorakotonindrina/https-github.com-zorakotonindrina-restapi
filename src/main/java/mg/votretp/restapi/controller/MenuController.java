@@ -27,4 +27,7 @@ public class MenuController {
     public List<CategoryWithPlatsDTO> getPlatsGroupesParCategorie() {
         return platMenuService.getPlatsGroupesParCategorie();
     }
+
+
+
 }

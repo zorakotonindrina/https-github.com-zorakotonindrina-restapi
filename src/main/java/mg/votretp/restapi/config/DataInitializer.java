@@ -183,4 +183,25 @@ public class DataInitializer {
             }
         };
     }
+
+    @Bean
+    CommandLineRunner initTables(TableRestaurantRepository tableRepo,
+                                 RestaurantRepository restaurantRepo) {
+        return args -> {
+
+            Restaurant restaurant = restaurantRepo.findById(1L)
+                    .orElseThrow(() -> new RuntimeException("Restaurant introuvable"));
+
+            if (tableRepo.count() == 0) {
+                for (int i = 1; i <= 10; i++) {
+                    TableRestaurant t = new TableRestaurant();
+                    t.setNumero("T" + i);
+                    t.setRestaurant(restaurant);
+                    tableRepo.save(t);
+                }
+
+                System.out.println("Tables créées !");
+            }
+        };
+    }
 }

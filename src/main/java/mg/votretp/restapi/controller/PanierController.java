@@ -2,7 +2,9 @@ package mg.votretp.restapi.controller;
 
 
 import mg.votretp.restapi.dto.*;
+import mg.votretp.restapi.model.TableRestaurant;
 import mg.votretp.restapi.repository.PrixPlatRepository;
+import mg.votretp.restapi.repository.TableRestaurantRepository;
 import mg.votretp.restapi.service.PanierService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
+import java.util.List;
 import java.util.Map;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -21,9 +24,11 @@ public class PanierController {
 
 
     private final PanierService panierService;
+    private final TableRestaurantRepository tableRestaurantRepository;
 
-    public PanierController(PanierService panierService) {
+    public PanierController(PanierService panierService , TableRestaurantRepository tableRestaurantRepository) {
         this.panierService = panierService;
+        this.tableRestaurantRepository = tableRestaurantRepository;
     }
 
     @Operation(summary = "Passer Commande")
@@ -130,5 +135,10 @@ public class PanierController {
     @GetMapping("/detail/{numCommande}")
     public CommandeClientDetailDTO getDetailCommande(@PathVariable Integer numCommande) {
         return panierService.getDetailCommande(numCommande);
+    }
+
+    @GetMapping("/tables")
+    public List<TableRestaurant> getAllTables() {
+        return tableRestaurantRepository.findAll();
     }
 }

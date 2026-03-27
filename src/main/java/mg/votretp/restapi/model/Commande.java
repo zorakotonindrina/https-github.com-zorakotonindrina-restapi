@@ -29,6 +29,10 @@ public class Commande {
     private String status;
 
     @ManyToOne
+    @JoinColumn(name = "id_table")
+    private TableRestaurant table;
+
+    @ManyToOne
     @JoinColumn(name = "id_mode_paiement")
     private ModePaiement modePaiement;
 
@@ -94,5 +98,13 @@ public class Commande {
 
     public void setModePaiement(ModePaiement modePaiement) {
         this.modePaiement = modePaiement;
+    }
+
+    public TableRestaurant getTable() {
+        return table;
+    }
+
+    public void setTable(TableRestaurant table) {
+        this.table = table;
     }
 }
