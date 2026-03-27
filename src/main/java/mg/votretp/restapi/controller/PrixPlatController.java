@@ -46,4 +46,6 @@ public class PrixPlatController {
     public Map<String, String> deletePrixPlat(@PathVariable Long id) {
         return Map.of("message", prixPlatService.deletePrixPlat(id));
     }
+
+
 }

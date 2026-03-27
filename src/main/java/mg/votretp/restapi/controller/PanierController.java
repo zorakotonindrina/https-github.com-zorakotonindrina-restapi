@@ -139,6 +139,7 @@ public class PanierController {
 
     @GetMapping("/tables")
     public List<TableRestaurant> getAllTables() {
+        
         return tableRestaurantRepository.findAll();
     }
 }
