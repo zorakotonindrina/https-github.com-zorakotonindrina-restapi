@@ -1,5 +1,6 @@
 package mg.votretp.restapi.controller;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import mg.votretp.restapi.dto.PlatCreateDTO;
 import mg.votretp.restapi.model.Plat;
 import mg.votretp.restapi.service.PlatService;
@@ -11,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
+@Tag(name = "Plats", description = "CRUD")
 @RequestMapping("/api/plats")
 public class PlatCrudController {
 

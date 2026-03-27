@@ -1,5 +1,6 @@
 package mg.votretp.restapi.controller;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import mg.votretp.restapi.dto.CategoryCreateDTO;
 import mg.votretp.restapi.model.Category;
 import mg.votretp.restapi.service.CategoryService;
@@ -10,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
+@Tag(name = "Categories", description = "CRUD")
 @RequestMapping("/api/categories")
 public class CategoryController {
 
