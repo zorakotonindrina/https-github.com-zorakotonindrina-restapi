@@ -441,7 +441,7 @@ public class PanierService {
         Commande commande = commandeRepository.findById(dto.getIdCommande())
                 .orElseThrow(() -> new RuntimeException("Commande introuvable"));
 
-        if (!java.util.List.of("EN_VALIDATION_EMAIL", "EN_ATTENTE").contains(commande.getStatus())) {
+        if (!java.util.List.of("EN_VALIDATION_EMAIL", "EN_ATTENTE","A_VALIDER_RESTAURANT").contains(commande.getStatus())) {
             throw new RuntimeException("Cette commande ne peut plus être annulée");
         }
 

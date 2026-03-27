@@ -1,17 +1,16 @@
 package mg.votretp.restapi.service;
 
+import jakarta.transaction.Transactional;
 import mg.votretp.restapi.dto.CommandeAdminDTO;
 import mg.votretp.restapi.dto.CommandeAdminLigneDTO;
 import mg.votretp.restapi.model.Commande;
 import mg.votretp.restapi.model.ListeCommande;
 import mg.votretp.restapi.model.PrixPlat;
 import mg.votretp.restapi.model.Recu;
-import mg.votretp.restapi.repository.CommandeRepository;
-import mg.votretp.restapi.repository.ListeCommandeRepository;
-import mg.votretp.restapi.repository.PrixPlatRepository;
-import mg.votretp.restapi.repository.RecuRepository;
+import mg.votretp.restapi.repository.*;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,17 +22,26 @@ public class AdminCommandeService {
     private final RecuRepository recuRepository;
     private final PrixPlatRepository prixPlatRepository;
 
+    private final MailValidationCommandeRepository mailValidationCommandeRepository;
+
     public AdminCommandeService(CommandeRepository commandeRepository,
                                 ListeCommandeRepository listeCommandeRepository,
                                 RecuRepository recuRepository,
-                                PrixPlatRepository prixPlatRepository) {
+                                PrixPlatRepository prixPlatRepository,
+                                MailValidationCommandeRepository mailValidationCommandeRepository) {
         this.commandeRepository = commandeRepository;
         this.listeCommandeRepository = listeCommandeRepository;
         this.recuRepository = recuRepository;
         this.prixPlatRepository = prixPlatRepository;
+        this.mailValidationCommandeRepository = mailValidationCommandeRepository;
     }
 
     public List<CommandeAdminDTO> getCommandesAValider() {
+
+        expirerCommandesNonValidees();
+
+        //nettoyerCommandesExpirees();
+        System.out.println("Commandes expirées supprimées ");
 
         List<Commande> commandes = commandeRepository
                 .findByStatusOrderByDateCommandeAsc("A_VALIDER_RESTAURANT");
@@ -84,4 +92,26 @@ public class AdminCommandeService {
                 lignesDTO
         );
     }
+
+
+
+    private void expirerCommandesNonValidees() {
+        List<Commande> commandes = commandeRepository.findByStatusIn(
+                java.util.List.of("EN_VALIDATION_EMAIL", "EN_ATTENTE")
+        );
+
+        java.time.LocalDateTime maintenant = java.time.LocalDateTime.now();
+
+        for (Commande commande : commandes) {
+            if (commande.getDateCommande() != null &&
+                    commande.getDateCommande().plusMinutes(30).isBefore(maintenant)) {
+                commande.setStatus("EXPIREE");
+                commandeRepository.save(commande);
+            }
+        }
+    }
+
+
+
+
 }

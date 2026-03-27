@@ -31,5 +31,7 @@ public interface CommandeRepository extends JpaRepository<Commande, Long> {
 
     java.util.Optional<Commande> findByNumCommande(Integer numCommande);
 
+    List<Commande> findByStatusIn(List<String> statuses);
+
 
 }

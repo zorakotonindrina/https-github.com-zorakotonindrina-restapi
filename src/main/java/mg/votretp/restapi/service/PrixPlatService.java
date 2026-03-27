@@ -1,6 +1,7 @@
 package mg.votretp.restapi.service;
 
 import mg.votretp.restapi.dto.PrixPlatCreateDTO;
+import mg.votretp.restapi.dto.PrixPlatResponseDTO;
 import mg.votretp.restapi.model.Plat;
 import mg.votretp.restapi.model.PrixPlat;
 import mg.votretp.restapi.repository.PlatRepository;
@@ -31,13 +32,29 @@ public class PrixPlatService {
         return prixPlatRepository.save(prixPlat);
     }
 
-    public List<PrixPlat> getAllPrixPlats() {
-        return prixPlatRepository.findAll();
+    public List<PrixPlatResponseDTO> getAllPrixPlats() {
+        List<PrixPlat> list = prixPlatRepository.findAll();
+
+        return list.stream().map(p -> new PrixPlatResponseDTO(
+                p.getIdPrix(),
+                p.getPrix().doubleValue(),
+                p.getDatePrix(),
+                p.getPlat().getIdPlat(),
+                p.getPlat().getNom()
+        )).toList();
     }
 
-    public PrixPlat getPrixPlatById(Long id) {
-        return prixPlatRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Prix introuvable"));
+    public PrixPlatResponseDTO getPrixPlatById(Long id) {
+        PrixPlat p = prixPlatRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Prix plat introuvable"));
+
+        return new PrixPlatResponseDTO(
+                p.getIdPrix(),
+                p.getPrix().doubleValue(),
+                p.getDatePrix(),
+                p.getPlat().getIdPlat(),
+                p.getPlat().getNom()
+        );
     }
 
     public PrixPlat updatePrixPlat(Long id, PrixPlatCreateDTO dto) {

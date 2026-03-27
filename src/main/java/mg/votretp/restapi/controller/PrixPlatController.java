@@ -1,6 +1,7 @@
 package mg.votretp.restapi.controller;
 
 import mg.votretp.restapi.dto.PrixPlatCreateDTO;
+import mg.votretp.restapi.dto.PrixPlatResponseDTO;
 import mg.votretp.restapi.model.PrixPlat;
 import mg.votretp.restapi.service.PrixPlatService;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -26,12 +27,12 @@ public class PrixPlatController {
     }
 
     @GetMapping
-    public List<PrixPlat> getAllPrixPlats() {
+    public List<PrixPlatResponseDTO> getAllPrixPlats() {
         return prixPlatService.getAllPrixPlats();
     }
 
     @GetMapping("/{id}")
-    public PrixPlat getPrixPlatById(@PathVariable Long id) {
+    public PrixPlatResponseDTO getPrixPlatById(@PathVariable Long id) {
         return prixPlatService.getPrixPlatById(id);
     }
 

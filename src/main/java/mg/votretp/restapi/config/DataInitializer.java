@@ -20,7 +20,8 @@ public class DataInitializer {
                                PlatRepository platRepository,
                                PrixPlatRepository prixPlatRepository,
                                ModePaiementRepository modePaiementRepository,
-                               PasswordEncoder passwordEncoder) {
+                               PasswordEncoder passwordEncoder,
+                               TableRestaurantRepository tableRepo) {
         return args -> {
 
             // =========================
@@ -181,22 +182,17 @@ public class DataInitializer {
                 prix.setPrix(new BigDecimal("5000"));
                 prixPlatRepository.save(prix);
             }
-        };
-    }
 
-    @Bean
-    CommandLineRunner initTables(TableRestaurantRepository tableRepo,
-                                 RestaurantRepository restaurantRepo) {
-        return args -> {
 
-            Restaurant restaurant = restaurantRepo.findById(1L)
+
+            Restaurant restau = restaurantRepository.findById(1L)
                     .orElseThrow(() -> new RuntimeException("Restaurant introuvable"));
 
             if (tableRepo.count() == 0) {
                 for (int i = 1; i <= 10; i++) {
                     TableRestaurant t = new TableRestaurant();
                     t.setNumero("T" + i);
-                    t.setRestaurant(restaurant);
+                    t.setRestaurant(restau);
                     tableRepo.save(t);
                 }
 
@@ -204,4 +200,5 @@ public class DataInitializer {
             }
         };
     }
+
 }

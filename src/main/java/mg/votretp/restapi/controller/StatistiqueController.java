@@ -2,15 +2,11 @@ package mg.votretp.restapi.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import mg.votretp.restapi.dto.CommandeAdminDTO;
-import mg.votretp.restapi.dto.TopPlatDTO;
-import mg.votretp.restapi.dto.TotalParModePaiementDTO;
+import mg.votretp.restapi.dto.*;
 import mg.votretp.restapi.service.AdminCommandeService;
 import mg.votretp.restapi.service.StatistiqueService;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -45,5 +41,16 @@ public class StatistiqueController {
     @GetMapping("/total-par-mode-paiement")
     public List<TotalParModePaiementDTO> getTotalParModePaiement() {
         return statistiqueService.getTotalParModePaiement();
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/montant-par-mode-paiement")
+    public List<MontantParModePaiementDTO> getMontantParModePaiementEntreDeuxDates(
+            @RequestBody PeriodeStatDTO dto
+    ) {
+        return statistiqueService.getMontantParModePaiementEntreDeuxDates(
+                dto.getDateDebut(),
+                dto.getDateFin()
+        );
     }
 }
