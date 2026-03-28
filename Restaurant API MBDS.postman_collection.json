@@ -1,0 +1,1021 @@
+{
+  "info": {
+    "_postman_id": "7502eaae-e995-499b-891c-885a2cb88e66",
+    "name": "Restaurant API MBDS",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "31308897"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonData = pm.response.json();\r",
+                  "pm.environment.set(\"token\", jsonData.accessToken);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"numero\": \"0320000000\",\r\n  \"password\": \"123456\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/auth/login",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Registrer",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMzIwMDAwMDAwIiwiZW1haWwiOiIwMzIwMDAwMDAwIiwicm9sZSI6IkFETUlOIiwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc3NDcwNjU3OCwiZXhwIjoxNzc0NzA3NDc4fQ.YSvn-v2azY0Gx4wRcFPB0aCZ8xydzqdjmS9505AVBOU",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"nom\": \"Admin\",\r\n  \"prenom\": \"Test\",\r\n  \"numero\": \"0340000000\",\r\n  \"password\": \"123456\",\r\n  \"roleName\": \"ADMIN\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/auth/register",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "auth",
+                "register"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Client",
+      "item": [
+        {
+          "name": "Menu",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"numero\": \"0320000000\",\r\n  \"password\": \"123456\"\r\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/menu/plats-groupes",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "menu",
+                "plats-groupes"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Commander",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"emailClient\": \"client@test.com\",\r\n  \"numClient\": \"0341234567\",\r\n  \"idModePaiement\": 1,\r\n  \"idTable\": 1,\r\n  \"items\": [\r\n    {\r\n      \"idPlat\": 1,\r\n      \"quantite\": 2\r\n    },\r\n    {\r\n      \"idPlat\": 2,\r\n      \"quantite\": 1\r\n    }\r\n  ]\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/panier/client/commander",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "panier",
+                "client",
+                "commander"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Confirmer email",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "\r\n{\r\n    \"idCommande\": 1,\r\n    \"code\": \"471693\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/panier/client/confirmer-email",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "panier",
+                "client",
+                "confirmer-email"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Payer",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"idCommande\": 1,\r\n    \"refPaiement\": \"MVOLA123456\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/panier/client/soumettre-paiement",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "panier",
+                "client",
+                "soumettre-paiement"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Detail Commande",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"numero\": \"0320000000\",\r\n  \"password\": \"123456\"\r\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/panier/detail/280326001",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "panier",
+                "detail",
+                "280326001"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Listes Tables",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMzIwMDAwMDAwIiwiZW1haWwiOiIwMzIwMDAwMDAwIiwicm9sZSI6IkFETUlOIiwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc3NDcwNjU3OCwiZXhwIjoxNzc0NzA3NDc4fQ.YSvn-v2azY0Gx4wRcFPB0aCZ8xydzqdjmS9505AVBOU",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "nom",
+                  "value": "Jus ",
+                  "type": "text",
+                  "uuid": "c329ade1-4f46-4a16-a179-427723dfb530"
+                },
+                {
+                  "key": "detail",
+                  "value": "Naturelle",
+                  "type": "text",
+                  "uuid": "fb36c102-e492-464b-8300-7ab97ba0cc52"
+                },
+                {
+                  "key": "dispo",
+                  "value": "true",
+                  "type": "text",
+                  "uuid": "2fe762d1-55be-4960-b5af-a06d6ac2c724"
+                },
+                {
+                  "key": "idCategorie",
+                  "value": "4",
+                  "type": "text",
+                  "uuid": "38713498-2a31-4eae-ac93-4470aaf9e72a"
+                },
+                {
+                  "key": "idRestaurant",
+                  "value": "1",
+                  "type": "text",
+                  "uuid": "b7daa690-8473-47b2-8387-ab9c0eb02535"
+                },
+                {
+                  "key": "imagefile",
+                  "type": "file",
+                  "uuid": "7ffe9947-91da-4f05-b51e-1d4cccfcfd3f",
+                  "src": "postman-cloud:///1f12aae5-f169-4e70-bbb2-b80f80689230"
+                }
+              ]
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/panier/tables",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "panier",
+                "tables"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Admin",
+      "item": [
+        {
+          "name": "Commande a valider",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMzIwMDAwMDAwIiwiZW1haWwiOiIwMzIwMDAwMDAwIiwicm9sZSI6IkFETUlOIiwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc3NDcwMzk3NywiZXhwIjoxNzc0NzA0ODc3fQ.t_HkPQEOjvkzy6d6ScsS-VXyEZEL9xgdOTQe6EuiHjA",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/statistiques/a-valider",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "statistiques",
+                "a-valider"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Valider Restaurant",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMzIwMDAwMDAwIiwiZW1haWwiOiIwMzIwMDAwMDAwIiwicm9sZSI6IkFETUlOIiwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc3NDcwMzk3NywiZXhwIjoxNzc0NzA0ODc3fQ.t_HkPQEOjvkzy6d6ScsS-VXyEZEL9xgdOTQe6EuiHjA",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"idCommande\": 1\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/panier/valider-restaurant",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "panier",
+                "valider-restaurant"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Annuler Commande",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMzIwMDAwMDAwIiwiZW1haWwiOiIwMzIwMDAwMDAwIiwicm9sZSI6IkFETUlOIiwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc3NDcwNjU3OCwiZXhwIjoxNzc0NzA3NDc4fQ.YSvn-v2azY0Gx4wRcFPB0aCZ8xydzqdjmS9505AVBOU",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"idCommande\": 1\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/panier/annuler",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "panier",
+                "annuler"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Cuisine",
+      "item": [
+        {
+          "name": "Voir Commandes",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMzMwMDAwMDAwIiwiZW1haWwiOiIwMzMwMDAwMDAwIiwicm9sZSI6IkNVSVNJTklFUiIsInR5cGUiOiJhY2Nlc3MiLCJpYXQiOjE3NzQ3MDQyNzgsImV4cCI6MTc3NDcwNTE3OH0.AiFFwtXviYaJfeUOapXAMmEARiNwQoKGq0mq7N6X6sY",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/cuisine/commandes",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "cuisine",
+                "commandes"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Mettre une commande en preparation",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMzMwMDAwMDAwIiwiZW1haWwiOiIwMzMwMDAwMDAwIiwicm9sZSI6IkNVSVNJTklFUiIsInR5cGUiOiJhY2Nlc3MiLCJpYXQiOjE3NzQ3MDQyNzgsImV4cCI6MTc3NDcwNTE3OH0.AiFFwtXviYaJfeUOapXAMmEARiNwQoKGq0mq7N6X6sY",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"idCommande\": 1,\r\n  \"status\": \"EN_PREPARATION\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/cuisine/commandes/status",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "cuisine",
+                "commandes",
+                "status"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Mettre une commande Finie",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMzMwMDAwMDAwIiwiZW1haWwiOiIwMzMwMDAwMDAwIiwicm9sZSI6IkNVSVNJTklFUiIsInR5cGUiOiJhY2Nlc3MiLCJpYXQiOjE3NzQ3MDQyNzgsImV4cCI6MTc3NDcwNTE3OH0.AiFFwtXviYaJfeUOapXAMmEARiNwQoKGq0mq7N6X6sY",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"idCommande\": 1,\r\n  \"status\": \"FINIE\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/cuisine/commandes/status",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "cuisine",
+                "commandes",
+                "status"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Statistiques par status",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMzIwMDAwMDAwIiwiZW1haWwiOiIwMzIwMDAwMDAwIiwicm9sZSI6IkFETUlOIiwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc3NDcwNDg4MCwiZXhwIjoxNzc0NzA1NzgwfQ.7n2Fm4I0cr-4ZfsYm2_XfpwqTB0cIm9xtZibu1BTDX4",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/cuisine/commandes/statistiques-jour",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "cuisine",
+                "commandes",
+                "statistiques-jour"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Statistiques",
+      "item": [
+        {
+          "name": "Statistiques du jour",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMzIwMDAwMDAwIiwiZW1haWwiOiIwMzIwMDAwMDAwIiwicm9sZSI6IkFETUlOIiwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc3NDcwNDg4MCwiZXhwIjoxNzc0NzA1NzgwfQ.7n2Fm4I0cr-4ZfsYm2_XfpwqTB0cIm9xtZibu1BTDX4",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"dateDebut\": \"2026-03-01\",\r\n  \"dateFin\": \"2026-03-28\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/statistiques/montant-par-mode-paiement",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "statistiques",
+                "montant-par-mode-paiement"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Top plats",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMzIwMDAwMDAwIiwiZW1haWwiOiIwMzIwMDAwMDAwIiwicm9sZSI6IkFETUlOIiwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc3NDcwNDg4MCwiZXhwIjoxNzc0NzA1NzgwfQ.7n2Fm4I0cr-4ZfsYm2_XfpwqTB0cIm9xtZibu1BTDX4",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/statistiques/top-plats",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "statistiques",
+                "top-plats"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Categories",
+      "item": [
+        {
+          "name": "listes",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMzIwMDAwMDAwIiwiZW1haWwiOiIwMzIwMDAwMDAwIiwicm9sZSI6IkFETUlOIiwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc3NDcwNTU4NCwiZXhwIjoxNzc0NzA2NDg0fQ.vpsWwKSINHQVwgSSCO6xSNc5vEP1p882kCj4yIiqXwU",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/categories",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "categories"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Creation",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMzIwMDAwMDAwIiwiZW1haWwiOiIwMzIwMDAwMDAwIiwicm9sZSI6IkFETUlOIiwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc3NDcwNTU4NCwiZXhwIjoxNzc0NzA2NDg0fQ.vpsWwKSINHQVwgSSCO6xSNc5vEP1p882kCj4yIiqXwU",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"nom\": \"Dessert\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/categories",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "categories"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "detail",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMzIwMDAwMDAwIiwiZW1haWwiOiIwMzIwMDAwMDAwIiwicm9sZSI6IkFETUlOIiwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc3NDcwNTU4NCwiZXhwIjoxNzc0NzA2NDg0fQ.vpsWwKSINHQVwgSSCO6xSNc5vEP1p882kCj4yIiqXwU",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/categories/4",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "categories",
+                "4"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Modifier",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMzIwMDAwMDAwIiwiZW1haWwiOiIwMzIwMDAwMDAwIiwicm9sZSI6IkFETUlOIiwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc3NDcwNTU4NCwiZXhwIjoxNzc0NzA2NDg0fQ.vpsWwKSINHQVwgSSCO6xSNc5vEP1p882kCj4yIiqXwU",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"nom\": \"Dessert et Boisson\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/categories/4",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "categories",
+                "4"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Plats",
+      "item": [
+        {
+          "name": "Listes",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMzIwMDAwMDAwIiwiZW1haWwiOiIwMzIwMDAwMDAwIiwicm9sZSI6IkFETUlOIiwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc3NDcwNTU4NCwiZXhwIjoxNzc0NzA2NDg0fQ.vpsWwKSINHQVwgSSCO6xSNc5vEP1p882kCj4yIiqXwU",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"nom\": \"Dessert\"\r\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/plats",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "plats"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Creation",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMzIwMDAwMDAwIiwiZW1haWwiOiIwMzIwMDAwMDAwIiwicm9sZSI6IkFETUlOIiwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc3NDcwNjU3OCwiZXhwIjoxNzc0NzA3NDc4fQ.YSvn-v2azY0Gx4wRcFPB0aCZ8xydzqdjmS9505AVBOU",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "nom",
+                  "value": "Jus ",
+                  "type": "text",
+                  "uuid": "c329ade1-4f46-4a16-a179-427723dfb530"
+                },
+                {
+                  "key": "detail",
+                  "value": "Naturelle",
+                  "type": "text",
+                  "uuid": "fb36c102-e492-464b-8300-7ab97ba0cc52"
+                },
+                {
+                  "key": "dispo",
+                  "value": "true",
+                  "type": "text",
+                  "uuid": "2fe762d1-55be-4960-b5af-a06d6ac2c724"
+                },
+                {
+                  "key": "idCategorie",
+                  "value": "4",
+                  "type": "text",
+                  "uuid": "38713498-2a31-4eae-ac93-4470aaf9e72a"
+                },
+                {
+                  "key": "idRestaurant",
+                  "value": "1",
+                  "type": "text",
+                  "uuid": "b7daa690-8473-47b2-8387-ab9c0eb02535"
+                },
+                {
+                  "key": "imagefile",
+                  "type": "file",
+                  "uuid": "7ffe9947-91da-4f05-b51e-1d4cccfcfd3f",
+                  "src": "postman-cloud:///1f12aae5-f169-4e70-bbb2-b80f80689230"
+                }
+              ]
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/plats",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "plats"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Detail",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMzIwMDAwMDAwIiwiZW1haWwiOiIwMzIwMDAwMDAwIiwicm9sZSI6IkFETUlOIiwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc3NDcwNjU3OCwiZXhwIjoxNzc0NzA3NDc4fQ.YSvn-v2azY0Gx4wRcFPB0aCZ8xydzqdjmS9505AVBOU",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/plats/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "plats",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Modifier prix plats",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMzIwMDAwMDAwIiwiZW1haWwiOiIwMzIwMDAwMDAwIiwicm9sZSI6IkFETUlOIiwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc3NDcwNjU3OCwiZXhwIjoxNzc0NzA3NDc4fQ.YSvn-v2azY0Gx4wRcFPB0aCZ8xydzqdjmS9505AVBOU",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"prix\": 25000,\r\n  \"idPlat\": 1\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/prix-plats/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "prix-plats",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

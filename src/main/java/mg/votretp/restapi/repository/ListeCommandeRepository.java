@@ -17,7 +17,6 @@ public interface ListeCommandeRepository extends JpaRepository<ListeCommande, Lo
     @Query("""
         SELECT lc.plat.idPlat as idPlat, lc.plat.nom as nomPlat, SUM(lc.quantite) as quantiteTotale
         FROM ListeCommande lc
-        WHERE lc.commande.status IN ('A_VALIDER_RESTAURANT', 'CONFIRMEE', 'EN_ATTENTE')
         GROUP BY lc.plat.idPlat, lc.plat.nom
         ORDER BY SUM(lc.quantite) DESC
     """)
